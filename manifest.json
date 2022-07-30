@@ -3,7 +3,13 @@
     "description": "Gives more options to removing videos from the watch later playlist",
     "version": "0.1",
     "manifest_version": 3,
-    "permissions": ["activeTab", "scripting"],
+    "permissions": ["storage", "activeTab", "scripting"],
+    "web_accessible_resources": [
+      {
+        "resources": ["remove.js", "init.js"],
+        "matches": [ "https://www.youtube.com/*"]
+      }
+    ],
     "action": {
       "default_popup": "popup.html",
       "default_icon": {

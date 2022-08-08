@@ -1,7 +1,7 @@
 {
     "name": "Remove Youtube Watch Later Videos",
     "description": "Gives more options to removing videos from the watch later playlist",
-    "version": "0.5",
+    "version": "0.9",
     "manifest_version": 3,
     "permissions": ["storage", "activeTab", "scripting", "tabs"],
     "background": {

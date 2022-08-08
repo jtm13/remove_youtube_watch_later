@@ -65,7 +65,7 @@ var defaultOptions = {
 
 async function sleep(time) {
     await new Promise(resolve => setTimeout(resolve, time));
-}
+} // sleep for a set amount of milliseconds
 
 async function remove_video(elem, sTime) {
     simulate(elem.lastElementChild.firstElementChild.childNodes.item(3), "click");// select menu
@@ -90,34 +90,34 @@ async function wait(passes, prevLen, vidContainer) {
 
 function check(num, def) {
     return (isNaN(num)) ?  def : num;
-}
+} // checks if number is NaN
 
 function checkNull(num, def) {
     return (num == null) ? def : num;
-}
+} // checks if null
 
 function test_meta_helper(tester, tested, regexp) {
     tested = (regexp) ? tested : new RegExp(tested.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&'), 'i');
     let index = tester.search(tested);
     return (index == -1) ? false : true;
-}
+} // helps with regex and searching for test_meta
 
 function test_meta(meta) {
     if (keys[0][0] != null || keys[0][0].length == 0) {
         if (test_meta_helper(meta.firstElementChild.lastElementChild.innerHTML, keys[0][0], keys[0][1]) == false) return false;
-    }
+    } // if title text is not empty
     if (keys[1][0] != null || keys[1][0].length == 0) {
         let name = meta.children.item(1).firstElementChild.firstElementChild
             .firstElementChild.firstElementChild.firstElementChild.firstElementChild
             .firstElementChild;
         if (name != null) {
             return test_meta_helper(name.innerHTML, keys[1][0], keys[1][1]);
-        }
-    }
+        } // if there is an author
+    } // if author text is not empty
     return true;
-}
+} // tests the meta data (title and author name) for keywords if provided
 
-let keys = [[null, false], [null, false]];
+let keys = [[null, false], [null, false]]; // the tuple array of 2 (keyword, boolean)
 
 async function remove_vids() {
     let min = -1; // sets defaults
@@ -133,26 +133,26 @@ async function remove_vids() {
     max = check(parseInt(range[1]), -1); // set max
     sTime = check(parseInt(message[1]), 500); // set messages
     passes = check(parseInt(message[2]), 20); // set passes
-    let words = message[3].split('-', 2);
-    words[1] = checkNull(words[1], 0);
-    keys[0][0] = words[0];
-    keys[0][1] = (words[1] == "true") ? true : false;
-    words = message[4].split('-', 2);
-    words[1] = checkNull(words[1], 0);
-    keys[1][0] = words[0];
-    keys[1][1] = (words[1] == "true") ? true : false;
+    let words = message[3].split('-', 2); // gets the keyword data
+    words[1] = checkNull(words[1], 0); // check if keyword is null
+    keys[0][0] = words[0]; // transfer to keys
+    keys[0][1] = (words[1] == "true") ? true : false; // if regex is true, set keys to true | else false
+    words = message[4].split('-', 2); // gets the keyword data
+    words[1] = checkNull(words[1], 0); // check if keyword is null
+    keys[1][0] = words[0]; // transfer to keys
+    keys[1][1] = (words[1] == "true") ? true : false; // if regex is true, set keys to true | else false
 
     let vids = document.querySelector('div.style-scope.ytd-playlist-video-list-renderer#contents'); // gets the contents
     for (index = min; index <= max; index++) {
-        let elem = vids.children.item(index);
+        let elem = vids.children.item(index); // get current video
         if (index >= vids.children.length) {
             var len = document.querySelector('div.style-scope.ytd-playlist-sidebar-primary-info-renderer#stats').firstElementChild.firstElementChild.innerHTML;
-            len = len.replace(/,/g, "");
-            len = parseInt(len);
+            len = len.replace(/,/g, ""); // remove commas
+            len = parseInt(len); // get number for real length
             if (index < len) {
                 elem = vids.lastElementChild;
                 elem.scrollIntoView({block: 'nearest'}); // scroll to manipulate the load for page
-                load = await wait(passes, vids.children.length, vids);
+                load = await wait(passes, vids.children.length, vids); // wait a specified amount of seconds for loading
                 if (load) {
                     index--; // reset index
                     continue; // continue loop
@@ -162,14 +162,14 @@ async function remove_vids() {
             } else {
                 break;
             } // if the index has not reached the true length, pass | else, break
-        }
+        } // if the index surpasses the video container length
         if (index >= min && index <= max) {
             elem.scrollIntoView({block: 'nearest'});
             if (test_meta(elem.children.item(1).firstElementChild.lastElementChild)) {
-                await remove_video(elem, sTime);
+                await remove_video(elem, sTime); // remove video
                 index--;
-                max--;
-            }
+                max--; // decrement both number to account for removed video
+            } // if it passes the keyword test
         } // if within range, get data and scroll to it
     } // for every video in watch later
-}
+} // remove videos

@@ -1,7 +1,7 @@
 {
-    "name": "Remove Youtube Watch Later Videos",
-    "description": "Gives more options to removing videos from the watch later playlist",
-    "version": "0.9",
+    "name": "RemYou",
+    "description": "Gives more options to removing videos from the watch later playlist. Github: https://github.com/jtm13/remove_youtube_watch_later",
+    "version": "0.9.0.0",
     "manifest_version": 3,
     "permissions": ["storage", "activeTab", "scripting", "tabs"],
     "background": {
